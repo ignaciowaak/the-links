@@ -88,7 +88,7 @@
     </div>
     <div class="galery">
         <div class="item">
-            <video poster="calendario/ale90.jpg" src="vyfparapics/1.mp4"></video>
+            <video  src="vyfparapics/1.mp4"></video>
             <p class="description">🎶🎵🥵</p>
         </div>
         <div class="item">
@@ -204,7 +204,7 @@
 
     </div>
 
-    <script>
+     <script>
         document.addEventListener("DOMContentLoaded", function() {
             let lazyVideos = [].slice.call(document.querySelectorAll("video.lazy"));
             let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
@@ -216,6 +216,7 @@
                             let lazyVideo = entry.target;
                             lazyVideo.src = lazyVideo.dataset.src;
                             lazyVideo.load();
+                            lazyVideo.play(); // Reproducir automáticamente al cargar
                             lazyVideo.classList.remove("lazy");
                             lazyVideoObserver.unobserve(lazyVideo);
                         }
