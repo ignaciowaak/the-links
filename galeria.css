@@ -1,0 +1,14 @@
+body{
+    background-color: white;
+    margin: 1em;
+}
+
+img {
+    max-width: 100%;
+    margin-bottom: .5em;
+}
+
+.galery {
+    columns: 5 120px;
+    column-gap: 0.5em;
+}

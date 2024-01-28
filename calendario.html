@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario de Ale Watters</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+  <link rel="icon" href="fotosdetodo/reyylogo.png" type="image/x-icon" />
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100;0,200;0,400;1,100;1,200;1,300;1,400&family=Comfortaa:wght@300&family=Righteous&family=Sen&family=Work+Sans:wght@100;200;300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/custom.css">
+  <style>
+    body {
+      font-family: 'Sen', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    #calee {
+      font-family: 'Sen';
+      text-align: center;
+      margin-top: 30px; /* Ajusta según sea necesario */
+    }
+
+    #logo {
+      position: relative;
+      height: 50px;
+      background-color: #f4f4f4;
+      text-align: center;
+      z-index: 999;
+    }
+
+    #logo img {
+      max-width: 100px;
+      margin: -10px auto;
+      height: 100%;
+    }
+
+    #current-time {
+      position: fixed;
+      padding: 1px 8px 1px 8px;
+      background-color: #0f0f0f;
+      border-radius: 10px;
+      top: 5px;
+      left: 5px;
+      font-size: 12px;
+      color: white;
+      z-index: 1000;
+    }
+
+    #calendar {
+      position: relative;
+      margin-top: 120px;
+      background-color: #fff;
+      max-width: 800px;
+      margin: auto;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    #header {
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      padding: 12px;
+      border-radius: 15px 15px 0 0;
+    }
+
+    #days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .day {
+      position: relative;
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .day:hover {
+      background-color: #f9f9f9;
+    }
+
+    .event-day {
+      background-color: #acc1f8;
+    }
+
+    #reminder-container {
+      display: none;
+      padding: 20px;
+      text-align: center;
+    }
+
+    #reminder-content {
+      margin-bottom: 10px;
+    }
+
+    .selected-day {
+      background-color: black;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 15px;
+      animation: pulse 15s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.9);
+      }
+      50% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(0.9);
+      }
+    }
+
+    .day:hover {
+      background-color: #0f0f0f;
+    }
+
+    .current-day {
+      background-color: black;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 15px;
+      animation: pulse 3s infinite;
+    }
+
+    article {
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    article img:first-child {
+      box-shadow: 0 100px 100px -10px rgb(0, 0, 0);
+      border-radius: 4px;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    article img:last-child {
+      position: absolute;
+      width: 300px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto auto 40px auto ;
+      transform: translateY(20%);
+      transition: 1.9s ease;
+      opacity: -2;
+    }
+
+    article:hover {
+      transform: perspective(250px) rotateX(7deg) translateY(-10%) translateZ(0);
+    }
+
+    article::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      height: 100%;
+      width: 100%;
+      background-image: linear-gradient(
+        to bottom,
+        transparent 5%,
+        rgba(0, 0, 0, 2) 80%,
+        rgba(0, 0, 0) 95%
+      );
+      opacity: 0;
+      transition: all 0.9s ease;
+    }
+
+    article:hover::before {
+      opacity: 1;
+    }
+
+    article:hover img:last-child {
+      opacity: 1;
+      transform: translateY(15%);
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h3 id="calee">Calendario de Ale watters</h3>
+  </div>
+  <div id="logo">
+    <img src="fotosdetodo/reyylogo.png" alt="Logo de mi calendario">
+  </div>
+
+  <div id="current-time">
+    <div id="date-time-container"></div>
+  </div>
+
+  <div id="calendar">
+    <div id="header"></div>
+    <div id="days"></div>
+    <div id="reminder-container">
+      <div id="reminder-content"></div>
+    </div>
+    <article id="image-container">
+      <!-- Imágenes se cargarán dinámicamente aquí -->
+    </article>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const calendarContainer = document.getElementById("calendar");
+      const headerContainer = document.getElementById("header");
+      const daysContainer = document.getElementById("days");
+      const reminderContainer = document.getElementById("reminder-container");
+      const reminderContent = document.getElementById("reminder-content");
+      const imageContainer = document.getElementById("image-container");
+
+      const daysOfWeek = [ "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb","Dom"];
+      let selectedDayElement = null;
+
+      const diasConEventos = [15, 20, 25];
+
+      const reminders = {
+        1: "Recordatorio para el día 1",
+        2: "Recordatorio para el día 2",
+        15: "Recordatorio para el día 15",
+        20: "Recordatorio para el día 20",
+        25: "Recordatorio para el día 25"
+      };
+
+      const images = {
+        1: ["calendario/ale90.jpg", "calendario/alesub.png"],
+        2: ["imagen2_1.jpg", "imagen2_2.png"],
+        15: ["imagen15_1.jpg", "imagen15_2.png"],
+        20: ["imagen20_1.jpg", "imagen20_2.png"],
+        25: ["imagen25_1.jpg", "imagen25_2.png"]
+      };
+
+      function createCalendar() {
+        const currentDate = new Date();
+        const currentDay = currentDate.getDate();
+        const currentMonth = currentDate.getMonth() + 1; // Suma 1 porque los meses en JavaScript van de 0 a 11
+
+        const lastDayOfMonth = new Date(currentDate.getFullYear(), currentMonth, 0).getDate();
+
+
+
+
+        const dayOfWeekNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
+        headerContainer.innerText = `${dayOfWeekNames[currentDate.getDay()]}, ${currentDay} de ${obtenerNombreMes(currentMonth)}`;
+
+        for (const dayOfWeek of daysOfWeek) {
+          const dayHeader = document.createElement("div");
+          dayHeader.classList.add("day");
+          dayHeader.innerText = dayOfWeek;
+          daysContainer.appendChild(dayHeader);
+        }
+
+        for (let day = 1; day <= lastDayOfMonth; day++) {
+          const dayElement = document.createElement("div");
+          dayElement.classList.add("day");
+          dayElement.innerText = day;
+          if (day === currentDay) {
+            dayElement.classList.add("current-day");
+          }
+          if (diasConEventos.includes(day)) {
+            dayElement.classList.add("event-day");
+          }
+          dayElement.addEventListener("click", () => selectDay(day));
+          daysContainer.appendChild(dayElement);
+        }
+
+        const storedReminder = localStorage.getItem("reminder");
+        if (storedReminder) {
+          showReminder(storedReminder);
+        }
+      }
+
+      function selectDay(day) {
+        if (selectedDayElement) {
+          selectedDayElement.classList.remove("selected-day");
+        }
+
+        const dayElement = document.querySelector(`.day:nth-child(${day + daysOfWeek.length})`);
+        dayElement.classList.add("selected-day");
+        selectedDayElement = dayElement;
+
+        showImagesForDay(day);
+        showReminder(day);
+      }
+
+      function showImagesForDay(day) {
+        imageContainer.innerHTML = "";
+
+        const dayImages = images[day];
+
+        dayImages.forEach(imageSrc => {
+          const imgElement = document.createElement("img");
+          imgElement.src = imageSrc;
+          imgElement.alt = "Imagen";
+          imageContainer.appendChild(imgElement);
+        });
+      }
+
+      function showReminder(day) {
+        const reminderText = reminders[day] || "No hay recordatorio para este día.";
+        reminderContent.innerHTML = `<p>${reminderText}</p>`;
+        reminderContainer.style.display = "block";
+
+        localStorage.setItem("reminder", day);
+      }
+
+      function obtenerNombreMes(numeroMes) {
+        const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        return meses[numeroMes - 1];
+      }
+
+      createCalendar();
+
+      setInterval(updateTime, 1000);
+
+      function updateTime() {
+        const currentTime = new Date().toLocaleString("es-AR", { timeZone: "America/Argentina/Buenos_Aires" });
+        document.getElementById("date-time-container").innerHTML = `<p>${currentTime}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
