@@ -228,49 +228,48 @@
       const reminderContainer = document.getElementById("reminder-container");
       const reminderContent = document.getElementById("reminder-content");
       const imageContainer = document.getElementById("image-container");
-
-      const daysOfWeek = [ "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb","Dom"];
-      let selectedDayElement = null;
-
-      const diasConEventos = [15, 20,];
-
+  
+      const daysOfWeek = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+  
+      const diasConEventos = [15, 20];
+  
       const reminders = {
-        1: "Recordatorio para el día 1",
-        2: "Recordatorio para el día 2",
-        15: "<a>Recordatorio:</a> Sabado en bikini disco <br> DJ Ale Watters como invitado especial <br> free chicas hasta las 3 hs <br> ¡¡TE ESPERAMOS¡¡",
-        20: "<a>Recordatorio:</a> Muchachos Somos campeones del mundo y queres festejarlo a lo Grande <br> te esperamos en esta gran fiesta de toda la Argentina",
-        25: "Recordatorio para el día 25"
+        1: ["Recordatorio para el día 1"],
+        2: ["Recordatorio para el día 2"],
+        15: ["<a>Recordatorio:</a> Sabado en bikini disco <br> DJ Ale Watters como invitado especial <br> free chicas hasta las 3 hs <br> ¡¡TE ESPERAMOS¡¡"],
+        20: ["<a>Recordatorio:</a> Muchachos Somos campeones del mundo y queres festejarlo a lo Grande <br> te esperamos en esta gran fiesta de toda la Argentina"],
+        25: ["Recordatorio para el día 25"]
+        // Agrega aquí los recordatorios para los demás días del mes
       };
-
+  
       const images = {
         1: ["", ""],
         2: ["", ""],
         15: ["calendario/SABADO+27.jpg", "calendario/000.png"],
         20: ["calendario/camp.jpg", "calendario/000.png"],
+        21: ["calendario/camp.jpg", "calendario/000.png"],
         25: ["", ""]
+        // Agrega aquí las rutas de las imágenes para los demás días del mes
       };
-
+  
       function createCalendar() {
         const currentDate = new Date();
         const currentDay = currentDate.getDate();
         const currentMonth = currentDate.getMonth() + 1; // Suma 1 porque los meses en JavaScript van de 0 a 11
-
+  
         const lastDayOfMonth = new Date(currentDate.getFullYear(), currentMonth, 0).getDate();
-
-
-
-
+  
         const dayOfWeekNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-
-        headerContainer.innerText = `${dayOfWeekNames[currentDate.getDay()]}, ${currentDay} de ${obtenerNombreMes(currentMonth)}`;
-
+  
+        headerContainer.innerText = `${dayOfWeekNames[currentDate.getDay()]}, ${currentDay} de ${obtenerNombreMes(currentMonth)} - ${currentTime()}`;
+  
         for (const dayOfWeek of daysOfWeek) {
           const dayHeader = document.createElement("div");
           dayHeader.classList.add("day");
           dayHeader.innerText = dayOfWeek;
           daysContainer.appendChild(dayHeader);
         }
-
+  
         for (let day = 1; day <= lastDayOfMonth; day++) {
           const dayElement = document.createElement("div");
           dayElement.classList.add("day");
@@ -281,62 +280,62 @@
           if (diasConEventos.includes(day)) {
             dayElement.classList.add("event-day");
           }
-          dayElement.addEventListener("click", () => selectDay(day));
+          dayElement.addEventListener("click", () => {
+            selectDay(day);
+          });
           daysContainer.appendChild(dayElement);
         }
-
-        const storedReminder = localStorage.getItem("reminder");
-        if (storedReminder) {
-          showReminder(storedReminder);
-        }
       }
-
+  
       function selectDay(day) {
-        if (selectedDayElement) {
-          selectedDayElement.classList.remove("selected-day");
+        const reminderText = reminders[day];
+        if (reminderText) {
+          showReminder(reminderText);
+          showImagesForDay(day);
+        } else {
+          reminderContent.innerHTML = "<p>Este día no hay nada</p>";
+          reminderContainer.style.display = "block";
+          imageContainer.innerHTML = ""; // Limpiar imágenes si no hay recordatorios
         }
-
-        const dayElement = document.querySelector(`.day:nth-child(${day + daysOfWeek.length})`);
-        dayElement.classList.add("selected-day");
-        selectedDayElement = dayElement;
-
-        showImagesForDay(day);
-        showReminder(day);
       }
-
+  
       function showImagesForDay(day) {
         imageContainer.innerHTML = "";
-
+  
         const dayImages = images[day];
-
+  
         dayImages.forEach(imageSrc => {
-          const imgElement = document.createElement("img");
-          imgElement.src = imageSrc;
-          imgElement.alt = "Imagen";
-          imageContainer.appendChild(imgElement);
+          if (imageSrc) {
+            const imgElement = document.createElement("img");
+            imgElement.src = imageSrc;
+            imgElement.alt = "Imagen";
+            imageContainer.appendChild(imgElement);
+          }
         });
       }
-
-      function showReminder(day) {
-        const reminderText = reminders[day] || "No hay recordatorio para este día.";
+  
+      function showReminder(reminderText) {
         reminderContent.innerHTML = `<p>${reminderText}</p>`;
         reminderContainer.style.display = "block";
-
-        localStorage.setItem("reminder", day);
       }
-
+  
       function obtenerNombreMes(numeroMes) {
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         return meses[numeroMes - 1];
       }
-
+  
+      function currentTime() {
+        const currentDate = new Date();
+        return currentDate.toLocaleTimeString("es-AR", {hour: '2-digit', minute: '2-digit'});
+      }
+  
       createCalendar();
-
+  
       setInterval(updateTime, 1000);
-
+  
       function updateTime() {
-        const currentTime = new Date().toLocaleString("es-AR", { timeZone: "America/Argentina/Buenos_Aires" });
-        document.getElementById("date-time-container").innerHTML = `<p>${currentTime}</p>`;
+        const currentDate = new Date();
+        headerContainer.innerText = `${dayOfWeekNames[currentDate.getDay()]}, ${currentDate.getDate()} de ${obtenerNombreMes(currentDate.getMonth() + 1)} - ${currentTime()}`;
       }
     });
   </script>
